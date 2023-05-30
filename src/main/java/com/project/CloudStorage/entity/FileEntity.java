@@ -17,6 +17,9 @@ public class FileEntity {
     @Column(name = "original_filename")
     private String originalFilename;
 
+    @Column(name = "size")
+    private Long size;
+
     @Column(name = "byte_array", columnDefinition = "bytea")
     @Lob
     private byte[] byteArray;
@@ -57,6 +60,14 @@ public class FileEntity {
 
     public void setByteArray(byte[] byteArray) {
         this.byteArray = byteArray;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
     }
 
     public UserEntity getUser() {

@@ -20,7 +20,8 @@ public class FileEntity {
     @Column(name = "size")
     private Long size;
 
-    @Column(name = "byte_array", columnDefinition = "bytea")
+//    @Column(name = "byte_array", columnDefinition = "bytea")
+    @Column(name = "byte_array")
     @Lob
     private byte[] byteArray;
 
@@ -29,6 +30,14 @@ public class FileEntity {
     private UserEntity user;
 
     public FileEntity() {}
+
+    public FileEntity(String filename, String originalFilename, Long size, byte[] byteArray, UserEntity user) {
+        this.filename = filename;
+        this.originalFilename = originalFilename;
+        this.size = size;
+        this.byteArray = byteArray;
+        this.user = user;
+    }
 
     public Long getFileId() {
         return fileId;

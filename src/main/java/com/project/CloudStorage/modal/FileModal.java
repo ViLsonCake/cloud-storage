@@ -19,7 +19,7 @@ public class FileModal {
     public static FileModal toModal(FileEntity fileEntity) {
         return new FileModal(fileEntity.getFilename(),
                 fileEntity.getOriginalFilename(),
-                FileUtils.convertToMegabytes(fileEntity.getSize()));
+                FileUtils.convertToReadableSize(fileEntity.getSize()));
     }
 
     public String getFilename() {

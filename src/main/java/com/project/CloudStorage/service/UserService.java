@@ -4,11 +4,11 @@ import com.project.CloudStorage.appConst.MessageConst;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
-import com.project.CloudStorage.modal.FileModal;
 import com.project.CloudStorage.modal.UserModal;
 import com.project.CloudStorage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +30,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public UserModal getUser(Long id) throws UserNotFoundException {
         if (!userRepository.existsById(id))
             throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, id));
@@ -37,6 +38,7 @@ public class UserService {
         return UserModal.toModal(userRepository.findById(id).get());
     }
 
+    @Transactional
     public List<UserModal> getUsers() {
         return userRepository.findAll().stream().map(UserModal::toModal).collect(Collectors.toList());
     }

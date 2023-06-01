@@ -28,16 +28,23 @@ public class FileService {
     }
 
     @Transactional
-    public int addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException {
+    public String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException {
         // Find user
         if (userRepository.findByUsername(username) == null)
-            throw new UserNotFoundException(MessageConst.USER_NOT_FOUND_MESSAGE);
+            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, username));
 
         List<FileEntity> filesForSave = new ArrayList<>();
 
         UserEntity userEntity = userRepository.findByUsername(username);
 
+        int rejectedFileSaveCount = 0;
+
         for (MultipartFile multipartFile : multipartFiles) {
+            if (multipartFile.getSize() > 1024 * 1024 * 5 && !userEntity.isPrime()) {
+                rejectedFileSaveCount++;
+                continue;
+            }
+
             FileEntity fileEntity = new FileEntity(
                     groupName,
                     multipartFile.getOriginalFilename(),
@@ -45,11 +52,11 @@ public class FileService {
                     multipartFile.getBytes(),
                     userEntity
             );
-        filesForSave.add(fileEntity);
+            filesForSave.add(fileEntity);
         }
         fileRepository.saveAll(filesForSave);
 
-        return multipartFiles.size();
+        return String.format("%s files has been saved\n%s files rejected", filesForSave.size(), rejectedFileSaveCount);
     }
 
 }

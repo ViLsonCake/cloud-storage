@@ -27,7 +27,7 @@ public class FileController {
                                           @RequestParam("files") List<MultipartFile> multipartFiles,
                                           @RequestParam("groupName") String groupName) {
         try {
-            return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName) + " files has been saved");
+            return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (IOException e) {

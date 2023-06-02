@@ -59,6 +59,18 @@ public class FileController {
         }
     }
 
+    @PutMapping("/{fileId}")
+    public ResponseEntity<String> changeFilename(@PathVariable("fileId") Long fileId,
+                                                 @RequestParam("filename") String filename) {
+        try {
+            return ResponseEntity.ok(String.format(
+                    MessageConst.CHANGE_FILENAME_MESSAGE, fileService.changeFilename(fileId, filename).getFilename()
+            ));
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/{fileId}")
     public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) {
         try {

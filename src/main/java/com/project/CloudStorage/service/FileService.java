@@ -69,6 +69,17 @@ public class FileService {
         return FileModal.toModal(fileRepository.findById(fileId).get());
     }
 
+    public FileModal changeFilename(Long fileId, String filename) throws FileNotFoundException {
+        if (!fileRepository.existsById(fileId))
+            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+
+        FileEntity fileEntity = fileRepository.findById(fileId).get();
+        fileEntity.setFilename(filename);
+        fileRepository.save(fileEntity);
+
+        return FileModal.toModal(fileEntity);
+    }
+
     public FileModal deleteFile(Long fileId) throws FileNotFoundException {
         if (!fileRepository.existsById(fileId))
             throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));

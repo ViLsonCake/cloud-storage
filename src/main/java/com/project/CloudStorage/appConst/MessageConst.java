@@ -9,4 +9,5 @@ public class MessageConst {
     public static final String USER_DELETE_MESSAGE = "User %s has been deleted";
     public static final String FILE_DELETE_MESSAGE = "File \"%s\" has been deleted";
     public static final String FILE_NOT_FOUND_MESSAGE = "File with id %s is not exist";
+    public static final String CHANGE_FILENAME_MESSAGE = "Filename changed to \"%s\"";
 }

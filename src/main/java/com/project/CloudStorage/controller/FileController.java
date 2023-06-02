@@ -59,4 +59,15 @@ public class FileController {
         }
     }
 
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) {
+        try {
+            return ResponseEntity.ok(String.format(
+                    MessageConst.FILE_DELETE_MESSAGE, fileService.deleteFile(fileId).getOriginalFilename()
+            ));
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

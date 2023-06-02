@@ -7,5 +7,6 @@ public class MessageConst {
     public static final String PRIME_CHANGE_MESSAGE = "User prime change on %s";
     public static final String USER_SAVED_MESSAGE = "User %s is successfully saved";
     public static final String USER_DELETE_MESSAGE = "User %s has been deleted";
+    public static final String FILE_DELETE_MESSAGE = "File \"%s\" has been deleted";
     public static final String FILE_NOT_FOUND_MESSAGE = "File with id %s is not exist";
 }

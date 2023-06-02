@@ -4,13 +4,16 @@ import com.project.CloudStorage.appConst.MessageConst;
 import com.project.CloudStorage.entity.FileEntity;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.UserNotFoundException;
+import com.project.CloudStorage.modal.FileModal;
 import com.project.CloudStorage.repository.FileRepository;
 import com.project.CloudStorage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,20 @@ public class FileService {
         fileRepository.saveAll(filesForSave);
 
         return String.format("%s files has been saved\n%s files rejected", filesForSave.size(), rejectedFileSaveCount);
+    }
+
+    public FileModal getFileInfo(Long fileId) throws FileNotFoundException {
+        if (!fileRepository.existsById(fileId))
+            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+
+        return FileModal.toModal(fileRepository.findById(fileId).get());
+    }
+
+    public ByteArrayResource sendFile(Long fileId) throws FileNotFoundException {
+        if (!fileRepository.existsById(fileId))
+            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+
+        return new ByteArrayResource(fileRepository.findById(fileId).get().getByteArray());
     }
 
 }

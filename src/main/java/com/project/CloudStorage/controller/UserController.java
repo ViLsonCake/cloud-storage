@@ -1,5 +1,6 @@
 package com.project.CloudStorage.controller;
 
+import com.project.CloudStorage.appConst.MessageConst;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
@@ -22,13 +23,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable("id") Long id) throws UserNotFoundException {
+    @GetMapping("/{username}")
+    public ResponseEntity<?> getUserByUsername(@PathVariable("username") String username) {
         try {
-            return ResponseEntity.ok(userService.getUser(id));
+            return ResponseEntity.ok(userService.getUserByUsername(username));
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> usersCount() {
+        return ResponseEntity.ok(userService.usersCount());
     }
 
     @GetMapping
@@ -36,12 +42,30 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
+    @PutMapping("/{username}")
+    public ResponseEntity<String> changePrime(@PathVariable("username") String username) {
+        try {
+            return ResponseEntity.ok(String.format(MessageConst.PRIME_CHANGE_MESSAGE, userService.changePrime(username)));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping
     public ResponseEntity<String> addUser(@RequestBody UserEntity user) {
         try {
-            return ResponseEntity.ok(String.format("User %s is successfully saved",
+            return ResponseEntity.ok(String.format(MessageConst.USER_SAVED_MESSAGE,
                     userService.addUser(user).getUsername()));
         } catch (UserAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
+        try {
+            return ResponseEntity.ok(String.format(MessageConst.USER_DELETE_MESSAGE, userService.deleteUser(username).getUsername()));
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

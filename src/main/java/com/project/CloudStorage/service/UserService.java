@@ -31,15 +31,41 @@ public class UserService {
     }
 
     @Transactional
-    public UserModal getUser(Long id) throws UserNotFoundException {
-        if (!userRepository.existsById(id))
-            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, id));
+    public UserModal getUserByUsername(String username) throws UserNotFoundException {
+        if (userRepository.findByUsername(username) == null)
+            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, username));
 
-        return UserModal.toModal(userRepository.findById(id).get());
+        return UserModal.toModal(userRepository.findByUsername(username));
     }
 
     @Transactional
     public List<UserModal> getUsers() {
         return userRepository.findAll().stream().map(UserModal::toModal).collect(Collectors.toList());
+    }
+
+    public UserEntity deleteUser(String username) throws UserNotFoundException {
+        if (userRepository.findByUsername(username) == null)
+            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, username));
+
+        UserEntity userEntity = userRepository.findByUsername(username);
+        userRepository.delete(userEntity);
+
+        return userEntity;
+    }
+
+    public boolean changePrime(String username) throws UserNotFoundException {
+        if (userRepository.findByUsername(username) == null)
+            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, username));
+
+        UserEntity userEntity = userRepository.findByUsername(username);
+        userEntity.setPrime(!userEntity.isPrime());
+
+        userRepository.save(userEntity);
+
+        return userEntity.isPrime();
+    }
+
+    public int usersCount() {
+        return userRepository.findAll().size();
     }
 }

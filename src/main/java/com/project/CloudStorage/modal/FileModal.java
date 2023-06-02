@@ -4,22 +4,35 @@ import com.project.CloudStorage.entity.FileEntity;
 import com.project.CloudStorage.utils.FileUtils;
 
 public class FileModal {
+    private Long id;
     private String filename;
     private String originalFilename;
     private String convertSize;
 
     public FileModal() {}
 
-    public FileModal(String filename, String originalFilename, String convertSize) {
+    public FileModal(Long id, String filename, String originalFilename, String convertSize) {
+        this.id = id;
         this.filename = filename;
         this.originalFilename = originalFilename;
         this.convertSize = convertSize;
     }
 
     public static FileModal toModal(FileEntity fileEntity) {
-        return new FileModal(fileEntity.getFilename(),
+        return new FileModal(
+                fileEntity.getFileId(),
+                fileEntity.getFilename(),
                 fileEntity.getOriginalFilename(),
-                FileUtils.convertToReadableSize(fileEntity.getSize()));
+                FileUtils.convertToReadableSize(fileEntity.getSize())
+        );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFilename() {

@@ -49,7 +49,7 @@ public class FileController {
     @PostMapping("/{username}")
     public ResponseEntity<String> addFile(@PathVariable("username") String username,
                                           @RequestParam("files") List<MultipartFile> multipartFiles,
-                                          @RequestParam("groupName") String groupName) {
+                                          @RequestParam(value = "groupName", defaultValue = "file") String groupName) {
         try {
             return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName));
         } catch (UserNotFoundException e) {

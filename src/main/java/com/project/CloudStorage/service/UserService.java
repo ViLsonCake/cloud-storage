@@ -1,12 +1,15 @@
 package com.project.CloudStorage.service;
 
 import com.project.CloudStorage.appConst.MessageConst;
+import com.project.CloudStorage.appConst.NumberConst;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
 import com.project.CloudStorage.modal.UserModal;
 import com.project.CloudStorage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +42,13 @@ public class UserService {
     }
 
     @Transactional
-    public List<UserModal> getUsers() {
-        return userRepository.findAll().stream().map(UserModal::toModal).collect(Collectors.toList());
+    public List<UserModal> getUsers(Integer page) {
+        Page<UserEntity> currentPageContent = userRepository.findAll(PageRequest.of(
+                page,
+                NumberConst.USERS_PAGE_COUNT
+        ));
+        return currentPageContent.stream().toList().stream().map(UserModal::toModal).collect(Collectors.toList());
+
     }
 
     public UserEntity deleteUser(String username) throws UserNotFoundException {

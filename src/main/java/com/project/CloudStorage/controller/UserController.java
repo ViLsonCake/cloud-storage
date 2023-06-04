@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserModal>> getUsers() {
-        return ResponseEntity.ok(userService.getUsers());
+    public ResponseEntity<List<UserModal>> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+        return ResponseEntity.ok(userService.getUsers(page));
     }
 
     @PutMapping("/{username}")

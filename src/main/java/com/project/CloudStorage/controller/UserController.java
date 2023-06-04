@@ -2,6 +2,7 @@ package com.project.CloudStorage.controller;
 
 import com.project.CloudStorage.appConst.MessageConst;
 import com.project.CloudStorage.entity.UserEntity;
+import com.project.CloudStorage.exception.EmailAlreadyExistException;
 import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
 import com.project.CloudStorage.modal.UserModal;
@@ -56,7 +57,7 @@ public class UserController {
         try {
             return ResponseEntity.ok(String.format(MessageConst.USER_SAVED_MESSAGE,
                     userService.addUser(user).getUsername()));
-        } catch (UserAlreadyExistException e) {
+        } catch (UserAlreadyExistException | EmailAlreadyExistException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

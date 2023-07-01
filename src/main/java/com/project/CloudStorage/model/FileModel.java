@@ -1,25 +1,25 @@
-package com.project.CloudStorage.modal;
+package com.project.CloudStorage.model;
 
 import com.project.CloudStorage.entity.FileEntity;
 import com.project.CloudStorage.utils.FileUtils;
 
-public class FileModal {
+public class FileModel {
     private Long id;
     private String filename;
     private String originalFilename;
     private String convertSize;
 
-    public FileModal() {}
+    public FileModel() {}
 
-    public FileModal(Long id, String filename, String originalFilename, String convertSize) {
+    public FileModel(Long id, String filename, String originalFilename, String convertSize) {
         this.id = id;
         this.filename = filename;
         this.originalFilename = originalFilename;
         this.convertSize = convertSize;
     }
 
-    public static FileModal toModal(FileEntity fileEntity) {
-        return new FileModal(
+    public static FileModel toModal(FileEntity fileEntity) {
+        return new FileModel(
                 fileEntity.getFileId(),
                 fileEntity.getFilename(),
                 fileEntity.getOriginalFilename(),

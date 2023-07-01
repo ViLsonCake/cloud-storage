@@ -5,9 +5,10 @@ import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.EmailAlreadyExistException;
 import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
-import com.project.CloudStorage.modal.UserModal;
-import com.project.CloudStorage.service.UserService;
+import com.project.CloudStorage.model.UserModel;
+import com.project.CloudStorage.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +18,10 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
@@ -34,12 +35,13 @@ public class UserController {
     }
 
     @GetMapping("/count")
+    @Cacheable("usersCount")
     public ResponseEntity<Integer> usersCount() {
         return ResponseEntity.ok(userService.usersCount());
     }
 
     @GetMapping
-    public ResponseEntity<List<UserModal>> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+    public ResponseEntity<List<UserModel>> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
 

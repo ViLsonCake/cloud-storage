@@ -1,30 +1,30 @@
-package com.project.CloudStorage.modal;
+package com.project.CloudStorage.model;
 
 import com.project.CloudStorage.entity.UserEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserModal {
+public class UserModel {
     private String username;
     private String email;
     private boolean prime;
-    private List<FileModal> files;
+    private List<FileModel> files;
 
-    public UserModal() {}
+    public UserModel() {}
 
-    public UserModal(String username, String email, boolean prime, List<FileModal> files) {
+    public UserModel(String username, String email, boolean prime, List<FileModel> files) {
         this.username = username;
         this.email = email;
         this.prime = prime;
         this.files = files;
     }
 
-    public static UserModal toModal(UserEntity userEntity) {
-        return new UserModal(userEntity.getUsername(),
+    public static UserModel toModal(UserEntity userEntity) {
+        return new UserModel(userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.isPrime(),
-                userEntity.getFiles().stream().map(FileModal::toModal).collect(Collectors.toList()));
+                userEntity.getFiles().stream().map(FileModel::toModal).collect(Collectors.toList()));
     }
 
     public String getUsername() {
@@ -51,11 +51,11 @@ public class UserModal {
         this.prime = prime;
     }
 
-    public List<FileModal> getFiles() {
+    public List<FileModel> getFiles() {
         return files;
     }
 
-    public void setFiles(List<FileModal> files) {
+    public void setFiles(List<FileModel> files) {
         this.files = files;
     }
 }

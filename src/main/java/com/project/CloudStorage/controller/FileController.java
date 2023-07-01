@@ -2,7 +2,7 @@ package com.project.CloudStorage.controller;
 
 import com.project.CloudStorage.appConst.MessageConst;
 import com.project.CloudStorage.exception.UserNotFoundException;
-import com.project.CloudStorage.service.FileService;
+import com.project.CloudStorage.service.FileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,10 +18,10 @@ import java.util.List;
 @RequestMapping("/files")
 public class FileController {
 
-    private final FileService fileService;
+    private final FileServiceImpl fileService;
 
     @Autowired
-    public FileController(FileService fileService) {
+    public FileController(FileServiceImpl fileService) {
         this.fileService = fileService;
     }
 

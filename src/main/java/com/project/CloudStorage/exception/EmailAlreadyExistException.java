@@ -1,6 +1,6 @@
 package com.project.CloudStorage.exception;
 
-public class EmailAlreadyExistException extends Exception {
+public class EmailAlreadyExistException extends RuntimeException {
     public EmailAlreadyExistException(String message) {
         super(message);
     }

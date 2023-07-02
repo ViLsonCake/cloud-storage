@@ -4,7 +4,7 @@ services:
     image: postgres:latest
     container_name: db
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - app_postgres_data:/var/lib/postgresql/data
     environment:
@@ -15,7 +15,7 @@ services:
     build: .
     container_name: app
     ports:
-      - "8080:8080"
+      - '8080:8080'
     depends_on:
       - db
     environment:
@@ -23,5 +23,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=0101
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_SERVLET_MULTIPART_MAX-FILE-SIZE=1GB
+      - SPRING_SERVLET_MULTIPART_MAX-REQUEST-SIZE=1GB
+      - SERVER_ERROR_INCLUDE_MESSAGE=always
 volumes:
   app_postgres_data:

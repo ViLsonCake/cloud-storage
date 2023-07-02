@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.CloudStorage.appConst.MessageConst.*;
+import static com.project.CloudStorage.appConst.NumberConst.*;
+
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -34,8 +37,7 @@ public class FileServiceImpl implements FileService {
     @Transactional
     public String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException {
         // Find user
-        if (userRepository.findByUsername(username) == null)
-            throw new UserNotFoundException(String.format(MessageConst.USER_NOT_FOUND_MESSAGE, username));
+        if (userRepository.findByUsername(username) == null) throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username));
 
         List<FileEntity> filesForSave = new ArrayList<>();
 
@@ -44,7 +46,7 @@ public class FileServiceImpl implements FileService {
         int rejectedFileSaveCount = 0;
 
         for (MultipartFile multipartFile : multipartFiles) {
-            if (multipartFile.getSize() > NumberConst.MAX_NON_PRIME_FILE_SIZE && !userEntity.isPrime()) {
+            if (multipartFile.getSize() > MAX_NON_PRIME_FILE_SIZE && !userEntity.isPrime()) {
                 rejectedFileSaveCount++;
                 continue;
             }
@@ -60,18 +62,21 @@ public class FileServiceImpl implements FileService {
         }
         fileRepository.saveAll(filesForSave);
 
-        return String.format("%s files has been saved\n%s files rejected", filesForSave.size(), rejectedFileSaveCount);
+        return String.format(
+                "%s files has been saved\n%s files rejected",
+                filesForSave.size(),
+                rejectedFileSaveCount
+        );
     }
 
     public FileModel getFileInfo(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId))
-            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
 
         return FileModel.toModal(fileRepository.findById(fileId).get());
     }
 
     public FileModel changeFilename(Long fileId, String filename) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
         fileEntity.setFilename(filename);
@@ -81,8 +86,7 @@ public class FileServiceImpl implements FileService {
     }
 
     public FileModel deleteFile(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId))
-            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
         fileRepository.delete(fileEntity);
@@ -91,10 +95,8 @@ public class FileServiceImpl implements FileService {
     }
 
     public ByteArrayResource sendFile(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId))
-            throw new FileNotFoundException(String.format(MessageConst.FILE_NOT_FOUND_MESSAGE, fileId));
+        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
 
         return new ByteArrayResource(fileRepository.findById(fileId).get().getByteArray());
     }
-
 }

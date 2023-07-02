@@ -26,60 +26,40 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}/info")
-    public ResponseEntity<?> getFileInfo(@PathVariable("fileId") Long fileId) {
-        try {
-            return ResponseEntity.ok(fileService.getFileInfo(fileId));
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> getFileInfo(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
+        return ResponseEntity.ok(fileService.getFileInfo(fileId));
     }
 
     @GetMapping("/{fileId}/download")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileId") Long fileId) {
-        try {
+    public ResponseEntity<?> downloadFile(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileService.getFileInfo(fileId).getOriginalFilename() + "\"")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(fileService.sendFile(fileId));
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
     @PostMapping("/{username}")
     public ResponseEntity<String> addFile(@PathVariable("username") String username,
                                           @RequestParam("files") List<MultipartFile> multipartFiles,
-                                          @RequestParam(value = "groupName", defaultValue = "file") String groupName) {
-        try {
-            return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body(MessageConst.FILE_SAVE_ERROR);
-        }
+                                          @RequestParam(value = "groupName", defaultValue = "file") String groupName) throws IOException {
+        return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName));
     }
 
     @PutMapping("/{fileId}")
     public ResponseEntity<String> changeFilename(@PathVariable("fileId") Long fileId,
-                                                 @RequestParam("filename") String filename) {
-        try {
+                                                 @RequestParam("filename") String filename) throws FileNotFoundException {
             return ResponseEntity.ok(String.format(
-                    MessageConst.CHANGE_FILENAME_MESSAGE, fileService.changeFilename(fileId, filename).getFilename()
+                    MessageConst.CHANGE_FILENAME_MESSAGE,
+                    fileService.changeFilename(fileId, filename).getFilename()
             ));
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) {
-        try {
+    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
             return ResponseEntity.ok(String.format(
-                    MessageConst.FILE_DELETE_MESSAGE, fileService.deleteFile(fileId).getOriginalFilename()
+                    MessageConst.FILE_DELETE_MESSAGE,
+                    fileService.deleteFile(fileId).getOriginalFilename()
             ));
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
     }
 
 }

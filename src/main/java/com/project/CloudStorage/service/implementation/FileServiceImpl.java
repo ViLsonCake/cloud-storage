@@ -57,6 +57,7 @@ public class FileServiceImpl implements FileService {
                     multipartFile.getBytes(),
                     userEntity
             );
+
             filesForSave.add(fileEntity);
         }
         fileRepository.saveAll(filesForSave);

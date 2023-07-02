@@ -6,6 +6,7 @@ import com.project.CloudStorage.service.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,14 +37,17 @@ public class UserController {
 
     @GetMapping
     @Cacheable("users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserModel>> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
 
     @PutMapping("/{username}")
     public ResponseEntity<String> changePrime(@PathVariable("username") String username) {
-        return ResponseEntity.ok(String.format(PRIME_CHANGE_MESSAGE, userService.changePrime(username)));
-
+        return ResponseEntity.ok(String.format(
+                PRIME_CHANGE_MESSAGE,
+                userService.changePrime(username))
+        );
     }
 
     @PostMapping
@@ -56,6 +60,9 @@ public class UserController {
 
     @DeleteMapping("/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
-        return ResponseEntity.ok(String.format(USER_DELETE_MESSAGE, userService.deleteUser(username).getUsername()));
+        return ResponseEntity.ok(String.format(
+                USER_DELETE_MESSAGE,
+                userService.deleteUser(username).getUsername())
+        );
     }
 }

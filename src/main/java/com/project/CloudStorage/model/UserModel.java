@@ -1,61 +1,33 @@
 package com.project.CloudStorage.model;
 
 import com.project.CloudStorage.entity.UserEntity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class UserModel {
+    @NonNull
     private String username;
+    @NonNull
     private String email;
-    private boolean prime;
+    @NonNull
+    private Boolean prime;
+    @NonNull
     private List<FileModel> files;
 
-    public UserModel() {}
-
-    public UserModel(String username, String email, boolean prime, List<FileModel> files) {
-        this.username = username;
-        this.email = email;
-        this.prime = prime;
-        this.files = files;
-    }
-
     public static UserModel toModal(UserEntity userEntity) {
-        return new UserModel(userEntity.getUsername(),
+        return new UserModel(
+                userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.isPrime(),
-                userEntity.getFiles().stream().map(FileModel::toModal).collect(Collectors.toList()));
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isPrime() {
-        return prime;
-    }
-
-    public void setPrime(boolean prime) {
-        this.prime = prime;
-    }
-
-    public List<FileModel> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<FileModel> files) {
-        this.files = files;
+                userEntity.getFiles().stream().map(FileModel::toModal).collect(Collectors.toList())
+        );
     }
 }

@@ -4,7 +4,7 @@ Introducing the rest api for cloud storage on Spring boot. The application store
 
 ## Requests: 
 + GET /users/:id - get user by id
-+ GET /users/count
++ GET /users/count - get count of users
 + POST /users - add new user
 + PUT /users/:id - change prime status
 + DELETE /users/:id - delete user by id

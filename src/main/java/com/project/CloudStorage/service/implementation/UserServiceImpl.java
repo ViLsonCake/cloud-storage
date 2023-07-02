@@ -1,6 +1,6 @@
-package com.project.CloudStorage.service;
+package com.project.CloudStorage.service.implementation;
 
-import com.project.CloudStorage.appConst.NumberConst;
+import com.project.CloudStorage.constant.NumberConst;
 import com.project.CloudStorage.config.SecurityConfig;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.EmailAlreadyExistException;
@@ -8,6 +8,7 @@ import com.project.CloudStorage.exception.UserAlreadyExistException;
 import com.project.CloudStorage.exception.UserNotFoundException;
 import com.project.CloudStorage.model.UserModel;
 import com.project.CloudStorage.repository.UserRepository;
+import com.project.CloudStorage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.project.CloudStorage.appConst.MessageConst.*;
+import static com.project.CloudStorage.constant.MessageConst.*;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {

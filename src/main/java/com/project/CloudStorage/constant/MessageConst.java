@@ -1,4 +1,4 @@
-package com.project.CloudStorage.appConst;
+package com.project.CloudStorage.constant;
 
 public class MessageConst {
     public static final String USER_ALREADY_EXIST_MESSAGE = "User %s already exist";

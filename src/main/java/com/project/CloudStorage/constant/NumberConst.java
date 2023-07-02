@@ -1,4 +1,4 @@
-package com.project.CloudStorage.appConst;
+package com.project.CloudStorage.constant;
 
 public class NumberConst {
     public static final Integer USERS_ON_PAGE_COUNT = 3;

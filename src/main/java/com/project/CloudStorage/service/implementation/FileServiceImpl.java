@@ -1,13 +1,12 @@
-package com.project.CloudStorage.service;
+package com.project.CloudStorage.service.implementation;
 
-import com.project.CloudStorage.appConst.MessageConst;
-import com.project.CloudStorage.appConst.NumberConst;
 import com.project.CloudStorage.entity.FileEntity;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.UserNotFoundException;
 import com.project.CloudStorage.model.FileModel;
 import com.project.CloudStorage.repository.FileRepository;
 import com.project.CloudStorage.repository.UserRepository;
+import com.project.CloudStorage.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
@@ -19,8 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.CloudStorage.appConst.MessageConst.*;
-import static com.project.CloudStorage.appConst.NumberConst.*;
+import static com.project.CloudStorage.constant.MessageConst.*;
+import static com.project.CloudStorage.constant.NumberConst.*;
 
 @Service
 public class FileServiceImpl implements FileService {

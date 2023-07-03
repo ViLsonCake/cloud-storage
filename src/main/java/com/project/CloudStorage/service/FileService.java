@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface FileService {
     String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException;
-    FileModel getFileInfo(Long fileId) throws FileNotFoundException;
-    FileModel changeFilename(Long fileId, String filename) throws FileNotFoundException;
-    FileModel deleteFile(Long fileId) throws FileNotFoundException;
-    ByteArrayResource sendFile(Long fileId) throws FileNotFoundException;
+    FileModel getFileInfo(Long fileId, String authHeader) throws FileNotFoundException;
+    FileModel changeFilename(Long fileId, String filename, String authHeader) throws FileNotFoundException;
+    FileModel deleteFile(Long fileId, String authHeader) throws FileNotFoundException;
+    ByteArrayResource sendFile(Long fileId, String authHeader) throws FileNotFoundException;
+    boolean isThisUserFile(Long fileId, String username);
 }

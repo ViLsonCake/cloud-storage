@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByUsername(user.getUsername()) != null)
             throw new UserAlreadyExistException(String.format(USER_ALREADY_EXIST_MESSAGE, user.getUsername()));
         if (userRepository.findByEmail(user.getEmail()) != null)
-            throw new EmailAlreadyExistException(String.format(EMAIL_ALREADY_EXIST, user.getEmail()));
+            throw new EmailAlreadyExistException(String.format(EMAIL_ALREADY_EXIST_MESSAGE, user.getEmail()));
 
         return userRepository.save(user);
     }

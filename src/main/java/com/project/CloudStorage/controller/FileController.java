@@ -2,6 +2,7 @@ package com.project.CloudStorage.controller;
 
 import com.project.CloudStorage.constant.MessageConst;
 import com.project.CloudStorage.service.implementation.FileServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,8 +14,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import static com.project.CloudStorage.constant.MessageConst.*;
+
 @RestController
 @RequestMapping("/files")
+@Slf4j
 public class FileController {
 
     private final FileServiceImpl fileService;
@@ -25,16 +29,16 @@ public class FileController {
     }
 
     @GetMapping("/{fileId}/info")
-    public ResponseEntity<?> getFileInfo(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
-        return ResponseEntity.ok(fileService.getFileInfo(fileId));
+    public ResponseEntity<?> getFileInfo(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
+        return ResponseEntity.ok(fileService.getFileInfo(fileId, authHeader));
     }
 
     @GetMapping("/{fileId}/download")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
+    public ResponseEntity<?> downloadFile(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileService.getFileInfo(fileId).getOriginalFilename() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileService.getFileInfo(fileId, authHeader).getOriginalFilename() + "\"")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(fileService.sendFile(fileId));
+                    .body(fileService.sendFile(fileId, authHeader));
     }
 
     @PostMapping("/{username}")
@@ -46,18 +50,20 @@ public class FileController {
 
     @PutMapping("/{fileId}")
     public ResponseEntity<String> changeFilename(@PathVariable("fileId") Long fileId,
-                                                 @RequestParam("filename") String filename) throws FileNotFoundException {
+                                                 @RequestParam("filename") String filename,
+                                                 @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
             return ResponseEntity.ok(String.format(
-                    MessageConst.CHANGE_FILENAME_MESSAGE,
-                    fileService.changeFilename(fileId, filename).getFilename()
+                    CHANGE_FILENAME_MESSAGE,
+                    fileService.changeFilename(fileId, filename, authHeader).getFilename()
             ));
     }
 
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId) throws FileNotFoundException {
+    public ResponseEntity<String> deleteFile(@PathVariable("fileId") Long fileId,
+                                             @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
             return ResponseEntity.ok(String.format(
-                    MessageConst.FILE_DELETE_MESSAGE,
-                    fileService.deleteFile(fileId).getOriginalFilename()
+                    FILE_DELETE_MESSAGE,
+                    fileService.deleteFile(fileId, authHeader).getOriginalFilename()
             ));
     }
 

@@ -2,6 +2,7 @@ package com.project.CloudStorage.service.implementation;
 
 import com.project.CloudStorage.entity.FileEntity;
 import com.project.CloudStorage.entity.UserEntity;
+import com.project.CloudStorage.exception.NotThisUserFileException;
 import com.project.CloudStorage.exception.UserNotFoundException;
 import com.project.CloudStorage.model.FileModel;
 import com.project.CloudStorage.repository.FileRepository;
@@ -18,8 +19,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.CloudStorage.constant.MessageConst.*;
-import static com.project.CloudStorage.constant.NumberConst.*;
+import static com.project.CloudStorage.constant.MessageConst.NOT_THIS_USER_FILE_MESSAGE;
+import static com.project.CloudStorage.constant.MessageConst.USER_NOT_FOUND_MESSAGE;
+import static com.project.CloudStorage.constant.NumberConst.MAX_NON_PRIME_FILE_SIZE;
+import static com.project.CloudStorage.utils.FileUtils.getUsernameFromHeader;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -35,13 +38,10 @@ public class FileServiceImpl implements FileService {
 
     @Transactional
     public String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException {
-        // Find user
         if (userRepository.findByUsername(username) == null) throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username));
 
         List<FileEntity> filesForSave = new ArrayList<>();
-
         UserEntity userEntity = userRepository.findByUsername(username);
-
         int rejectedFileSaveCount = 0;
 
         for (MultipartFile multipartFile : multipartFiles) {
@@ -69,14 +69,14 @@ public class FileServiceImpl implements FileService {
         );
     }
 
-    public FileModel getFileInfo(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
+    public FileModel getFileInfo(Long fileId, String authHeader) throws FileNotFoundException {
+        if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         return FileModel.toModal(fileRepository.findById(fileId).get());
     }
 
-    public FileModel changeFilename(Long fileId, String filename) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
+    public FileModel changeFilename(Long fileId, String filename, String authHeader) throws FileNotFoundException {
+        if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
         fileEntity.setFilename(filename);
@@ -85,8 +85,8 @@ public class FileServiceImpl implements FileService {
         return FileModel.toModal(fileEntity);
     }
 
-    public FileModel deleteFile(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
+    public FileModel deleteFile(Long fileId, String authHeader) throws FileNotFoundException {
+        if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
         fileRepository.delete(fileEntity);
@@ -94,9 +94,16 @@ public class FileServiceImpl implements FileService {
         return FileModel.toModal(fileEntity);
     }
 
-    public ByteArrayResource sendFile(Long fileId) throws FileNotFoundException {
-        if (!fileRepository.existsById(fileId)) throw new FileNotFoundException(String.format(FILE_NOT_FOUND_MESSAGE, fileId));
+    public ByteArrayResource sendFile(Long fileId, String authHeader) throws FileNotFoundException {
+        if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         return new ByteArrayResource(fileRepository.findById(fileId).get().getByteArray());
+    }
+
+    public boolean isThisUserFile(Long fileId, String username) {
+        final Long userId = userRepository.findByUsername(username).getUserId();
+        final List<Long> userFilesId = fileRepository.findAllFileIdByUserId(userId);
+
+        return userFilesId.contains(fileId);
     }
 }

@@ -3,6 +3,7 @@ package com.project.CloudStorage.controller;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.model.UserModel;
 import com.project.CloudStorage.service.implementation.UserServiceImpl;
+import com.project.CloudStorage.utils.FileUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,19 +27,26 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<?> getUserByUsername(@PathVariable("username") String username) {
-            return ResponseEntity.ok(userService.getUserByUsername(username));
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserModel> getUserByUsername(@PathVariable("username") String username) {
+        return ResponseEntity.ok(userService.getUserByUsername(username));
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<UserModel> userProfile(@RequestHeader("Authorization") String authHeader) {
+        return ResponseEntity.ok(userService.getUserByUsername(FileUtils.getUsernameFromHeader(authHeader)));
     }
 
     @GetMapping("/count")
     @Cacheable("usersCount")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Integer> usersCount() {
         return ResponseEntity.ok(userService.usersCount());
     }
 
     @GetMapping
     @Cacheable("users")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserModel>> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page) {
         return ResponseEntity.ok(userService.getUsers(page));
     }
@@ -60,6 +68,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
         return ResponseEntity.ok(String.format(
                 USER_DELETE_MESSAGE,

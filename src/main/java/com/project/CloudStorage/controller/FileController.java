@@ -18,7 +18,6 @@ import static com.project.CloudStorage.constant.MessageConst.*;
 
 @RestController
 @RequestMapping("/files")
-@Slf4j
 public class FileController {
 
     private final FileServiceImpl fileService;

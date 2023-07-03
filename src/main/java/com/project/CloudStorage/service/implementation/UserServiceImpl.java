@@ -10,6 +10,7 @@ import com.project.CloudStorage.model.UserModel;
 import com.project.CloudStorage.repository.UserRepository;
 import com.project.CloudStorage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.User;
@@ -29,7 +30,10 @@ import static com.project.CloudStorage.constant.MessageConst.*;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-
+    @Value("${spring.default-admin-user.username}")
+    private String adminUsername;
+    @Value("${spring.default-admin-user.password}")
+    private String adminPassword;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -88,13 +92,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (username.equals(adminUsername)) {
+            return User.builder()
+                    .username(adminUsername)
+                    .passwordEncoder(SecurityConfig.passwordEncoder()::encode)
+                    .password(adminPassword)
+                    .roles("ADMIN")
+                    .build();
+        }
+
         UserEntity user = userRepository.findByUsername(username);
 
         return User.builder()
-        .username(user.getUsername())
-        .passwordEncoder(SecurityConfig.passwordEncoder()::encode)
-        .password(user.getPassword())
-        .roles(String.valueOf(new HashSet<>()))
-        .build();
+                .username(user.getUsername())
+                .passwordEncoder(SecurityConfig.passwordEncoder()::encode)
+                .password(user.getPassword())
+                .roles(String.valueOf(new HashSet<>()))
+                .build();
     }
 }

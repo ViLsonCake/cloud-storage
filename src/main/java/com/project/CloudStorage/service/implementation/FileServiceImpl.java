@@ -19,8 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.CloudStorage.constant.MessageConst.NOT_THIS_USER_FILE_MESSAGE;
-import static com.project.CloudStorage.constant.MessageConst.USER_NOT_FOUND_MESSAGE;
+import static com.project.CloudStorage.constant.MessageConst.*;
 import static com.project.CloudStorage.constant.NumberConst.MAX_NON_PRIME_FILE_SIZE;
 import static com.project.CloudStorage.utils.FileUtils.getUsernameFromHeader;
 
@@ -49,7 +48,6 @@ public class FileServiceImpl implements FileService {
                 rejectedFileSaveCount++;
                 continue;
             }
-
             FileEntity fileEntity = new FileEntity(
                     groupName,
                     multipartFile.getOriginalFilename(),
@@ -57,25 +55,24 @@ public class FileServiceImpl implements FileService {
                     multipartFile.getBytes(),
                     userEntity
             );
-
             filesForSave.add(fileEntity);
         }
         fileRepository.saveAll(filesForSave);
 
         return String.format(
-                "%s files has been saved\n%s files rejected",
+                RESPONSE_SAVING_FILE_MESSAGE,
                 filesForSave.size(),
                 rejectedFileSaveCount
         );
     }
 
-    public FileModel getFileInfo(Long fileId, String authHeader) throws FileNotFoundException {
+    public FileModel getFileInfo(Long fileId, String authHeader) {
         if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         return FileModel.toModal(fileRepository.findById(fileId).get());
     }
 
-    public FileModel changeFilename(Long fileId, String filename, String authHeader) throws FileNotFoundException {
+    public FileModel changeFilename(Long fileId, String filename, String authHeader) {
         if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
@@ -85,7 +82,7 @@ public class FileServiceImpl implements FileService {
         return FileModel.toModal(fileEntity);
     }
 
-    public FileModel deleteFile(Long fileId, String authHeader) throws FileNotFoundException {
+    public FileModel deleteFile(Long fileId, String authHeader) {
         if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         FileEntity fileEntity = fileRepository.findById(fileId).get();
@@ -94,7 +91,7 @@ public class FileServiceImpl implements FileService {
         return FileModel.toModal(fileEntity);
     }
 
-    public ByteArrayResource sendFile(Long fileId, String authHeader) throws FileNotFoundException {
+    public ByteArrayResource sendFile(Long fileId, String authHeader) {
         if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
         return new ByteArrayResource(fileRepository.findById(fileId).get().getByteArray());

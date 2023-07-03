@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface FileService {
-    String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException;
+    String addFiles(List<MultipartFile> multipartFiles, String groupName, String authHeader) throws UserNotFoundException, IOException;
     FileModel getFileInfo(Long fileId, String authHeader) throws FileNotFoundException;
     FileModel changeFilename(Long fileId, String filename, String authHeader) throws FileNotFoundException;
     FileModel deleteFile(Long fileId, String authHeader) throws FileNotFoundException;

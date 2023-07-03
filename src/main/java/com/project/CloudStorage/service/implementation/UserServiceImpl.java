@@ -41,10 +41,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public UserEntity addUser(UserEntity user) throws UserAlreadyExistException, EmailAlreadyExistException {
-        if (userRepository.findByUsername(user.getUsername()) != null)
-            throw new UserAlreadyExistException(String.format(USER_ALREADY_EXIST_MESSAGE, user.getUsername()));
-        if (userRepository.findByEmail(user.getEmail()) != null)
-            throw new EmailAlreadyExistException(String.format(EMAIL_ALREADY_EXIST_MESSAGE, user.getEmail()));
+        if (userRepository.findByUsername(user.getUsername()) != null || user.getUsername().equalsIgnoreCase("admin")) throw new UserAlreadyExistException(String.format(USER_ALREADY_EXIST_MESSAGE, user.getUsername()));
+        if (userRepository.findByEmail(user.getEmail()) != null) throw new EmailAlreadyExistException(String.format(EMAIL_ALREADY_EXIST_MESSAGE, user.getEmail()));
 
         return userRepository.save(user);
     }

@@ -8,6 +8,7 @@ import com.project.CloudStorage.model.FileModel;
 import com.project.CloudStorage.repository.FileRepository;
 import com.project.CloudStorage.repository.UserRepository;
 import com.project.CloudStorage.service.FileService;
+import com.project.CloudStorage.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Transactional
-    public String addFiles(String username, List<MultipartFile> multipartFiles, String groupName) throws UserNotFoundException, IOException {
+    public String addFiles(List<MultipartFile> multipartFiles, String groupName, String authHeader) throws UserNotFoundException, IOException {
+        final String username = FileUtils.getUsernameFromHeader(authHeader);
         if (userRepository.findByUsername(username) == null) throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username));
 
         List<FileEntity> filesForSave = new ArrayList<>();

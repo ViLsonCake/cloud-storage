@@ -4,7 +4,6 @@ import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.model.UserModel;
 import com.project.CloudStorage.service.implementation.UserServiceImpl;
 import com.project.CloudStorage.utils.FileUtils;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;

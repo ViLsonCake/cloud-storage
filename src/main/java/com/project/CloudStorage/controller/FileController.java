@@ -40,11 +40,11 @@ public class FileController {
                     .body(fileService.sendFile(fileId, authHeader));
     }
 
-    @PostMapping("/{username}")
-    public ResponseEntity<String> addFile(@PathVariable("username") String username,
-                                          @RequestParam("files") List<MultipartFile> multipartFiles,
-                                          @RequestParam(value = "groupName", defaultValue = "file") String groupName) throws IOException {
-        return ResponseEntity.ok(fileService.addFiles(username, multipartFiles, groupName));
+    @PostMapping
+    public ResponseEntity<String> addFile(@RequestParam("files") List<MultipartFile> multipartFiles,
+                                          @RequestParam(value = "groupName", defaultValue = "file") String groupName,
+                                          @RequestHeader("Authorization") String authHeader) throws IOException {
+        return ResponseEntity.ok(fileService.addFiles(multipartFiles, groupName, authHeader));
     }
 
     @PutMapping("/{fileId}")

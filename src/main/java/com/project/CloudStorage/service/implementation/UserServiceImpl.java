@@ -1,6 +1,5 @@
 package com.project.CloudStorage.service.implementation;
 
-import com.project.CloudStorage.constant.NumberConst;
 import com.project.CloudStorage.config.SecurityConfig;
 import com.project.CloudStorage.entity.UserEntity;
 import com.project.CloudStorage.exception.EmailAlreadyExistException;
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserModel getUserByUsername(String username) throws UserNotFoundException {
         if (userRepository.findByUsername(username) == null) throw new UserNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username));
 
-        return UserModel.toModal(userRepository.findByUsername(username));
+        return UserModel.toModel(userRepository.findByUsername(username));
     }
 
     @Transactional
@@ -62,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         page,
                         USERS_ON_PAGE_COUNT
         ));
-        return currentPageContent.toList().stream().map(UserModel::toModal).collect(Collectors.toList());
+        return currentPageContent.toList().stream().map(UserModel::toModel).collect(Collectors.toList());
     }
 
     public UserEntity deleteUser(String username) throws UserNotFoundException {

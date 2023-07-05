@@ -11,6 +11,8 @@ import com.project.CloudStorage.service.FileService;
 import com.project.CloudStorage.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,9 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.CloudStorage.constant.MessageConst.*;
 import static com.project.CloudStorage.constant.NumberConst.MAX_NON_PRIME_FILE_SIZE;
+import static com.project.CloudStorage.constant.NumberConst.USERS_ON_PAGE_COUNT;
 import static com.project.CloudStorage.utils.FileUtils.getUsernameFromHeader;
 
 @Service
@@ -67,10 +71,19 @@ public class FileServiceImpl implements FileService {
         );
     }
 
+    public List<FileModel> getFilesInfo(Integer page) {
+        Page<FileEntity> currentPageContent = fileRepository.findAll(
+                PageRequest.of(
+                        page,
+                        USERS_ON_PAGE_COUNT
+                ));
+        return currentPageContent.toList().stream().map(FileModel::toModel).collect(Collectors.toList());
+    }
+
     public FileModel getFileInfo(Long fileId, String authHeader) {
         if (!isThisUserFile(fileId, getUsernameFromHeader(authHeader))) throw new NotThisUserFileException(String.format(NOT_THIS_USER_FILE_MESSAGE, fileId));
 
-        return FileModel.toModal(fileRepository.findById(fileId).get());
+        return FileModel.toModel(fileRepository.findById(fileId).get());
     }
 
     public FileModel changeFilename(Long fileId, String filename, String authHeader) {
@@ -80,7 +93,7 @@ public class FileServiceImpl implements FileService {
         fileEntity.setFilename(filename);
         fileRepository.save(fileEntity);
 
-        return FileModel.toModal(fileEntity);
+        return FileModel.toModel(fileEntity);
     }
 
     public FileModel deleteFile(Long fileId, String authHeader) {
@@ -89,7 +102,7 @@ public class FileServiceImpl implements FileService {
         FileEntity fileEntity = fileRepository.findById(fileId).get();
         fileRepository.delete(fileEntity);
 
-        return FileModel.toModal(fileEntity);
+        return FileModel.toModel(fileEntity);
     }
 
     public ByteArrayResource sendFile(Long fileId, String authHeader) {

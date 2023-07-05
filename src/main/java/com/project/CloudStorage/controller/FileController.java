@@ -1,12 +1,16 @@
 package com.project.CloudStorage.controller;
 
 import com.project.CloudStorage.constant.MessageConst;
+import com.project.CloudStorage.model.FileModel;
 import com.project.CloudStorage.service.implementation.FileServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,13 +31,20 @@ public class FileController {
         this.fileService = fileService;
     }
 
+    @GetMapping
+    @Cacheable("files")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<FileModel>> getFilesInto(@RequestParam(value = "page", defaultValue = "0") Integer page) {
+        return ResponseEntity.ok(fileService.getFilesInfo(page));
+    }
+
     @GetMapping("/{fileId}/info")
-    public ResponseEntity<?> getFileInfo(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
+    public ResponseEntity<FileModel> getFileInfo(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
         return ResponseEntity.ok(fileService.getFileInfo(fileId, authHeader));
     }
 
     @GetMapping("/{fileId}/download")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable("fileId") Long fileId, @RequestHeader("Authorization") String authHeader) throws FileNotFoundException {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileService.getFileInfo(fileId, authHeader).getOriginalFilename() + "\"")
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)

@@ -20,11 +20,11 @@ public class UserModel {
         this.files = files;
     }
 
-    public static UserModel toModal(UserEntity userEntity) {
+    public static UserModel toModel(UserEntity userEntity) {
         return new UserModel(userEntity.getUsername(),
                 userEntity.getEmail(),
                 userEntity.isPrime(),
-                userEntity.getFiles().stream().map(FileModel::toModal).collect(Collectors.toList()));
+                userEntity.getFiles().stream().map(FileModel::toModel).collect(Collectors.toList()));
     }
 
     public String getUsername() {

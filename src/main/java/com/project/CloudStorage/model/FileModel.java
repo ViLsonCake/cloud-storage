@@ -7,18 +7,18 @@ public class FileModel {
     private Long id;
     private String filename;
     private String originalFilename;
-    private String convertSize;
+    private String size;
 
     public FileModel() {}
 
-    public FileModel(Long id, String filename, String originalFilename, String convertSize) {
+    public FileModel(Long id, String filename, String originalFilename, String size) {
         this.id = id;
         this.filename = filename;
         this.originalFilename = originalFilename;
-        this.convertSize = convertSize;
+        this.size = size;
     }
 
-    public static FileModel toModal(FileEntity fileEntity) {
+    public static FileModel toModel(FileEntity fileEntity) {
         return new FileModel(
                 fileEntity.getFileId(),
                 fileEntity.getFilename(),
@@ -54,12 +54,12 @@ public class FileModel {
         return this;
     }
 
-    public String getConvertSize() {
-        return convertSize;
+    public String getSize() {
+        return size;
     }
 
-    public FileModel setConvertSize(String convertSize) {
-        this.convertSize = convertSize;
+    public FileModel setSize(String size) {
+        this.size = size;
         return this;
     }
 }

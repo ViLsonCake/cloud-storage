@@ -12,7 +12,7 @@ public class ErrorHandlerController {
 
     @ExceptionHandler
     public ResponseEntity<String> userException(RuntimeException exception) {
-        log.error(exception.getMessage());
+        log.warn(exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.project.CloudStorage.constant.MessageConst.*;
+import static com.project.CloudStorage.constant.NumberConst.*;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Page<UserEntity> currentPageContent = userRepository.findAll(
                 PageRequest.of(
                         page,
-                        NumberConst.USERS_ON_PAGE_COUNT
+                        USERS_ON_PAGE_COUNT
         ));
         return currentPageContent.stream().toList().stream().map(UserModel::toModal).collect(Collectors.toList());
     }

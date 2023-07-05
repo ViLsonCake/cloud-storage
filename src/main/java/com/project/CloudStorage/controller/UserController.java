@@ -51,6 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> changePrime(@PathVariable("username") String username) {
         return ResponseEntity.ok(String.format(
                 PRIME_CHANGE_MESSAGE,

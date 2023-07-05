@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                         page,
                         USERS_ON_PAGE_COUNT
         ));
-        return currentPageContent.stream().toList().stream().map(UserModel::toModal).collect(Collectors.toList());
+        return currentPageContent.toList().stream().map(UserModel::toModal).collect(Collectors.toList());
     }
 
     public UserEntity deleteUser(String username) throws UserNotFoundException {

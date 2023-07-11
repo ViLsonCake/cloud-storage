@@ -14,7 +14,7 @@ Application uses http basic authentication.
 + DELETE /users/:id - delete user by id (only for admins)
 + GET /files/:id/info - get authenticated user file data by id
 + GET /files/:id/download - download authenticated user file by id
-+ POST /files/:username - add file or files to user
++ POST /files - add file or files to authenticated user
 + PUT /files/:fileId - change authenticated user file name by id
 + DELETE /files/:fileId - delete authenticated user file by id
 
